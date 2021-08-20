@@ -4,6 +4,7 @@ SC-Controller - Action Editor - common part of "DPAD or menu" and "Special Actio
 two components with MenuAction selectable.
 """
 from __future__ import unicode_literals
+from builtins import str
 from scc.tools import _
 
 from gi.repository import Gtk
@@ -205,7 +206,7 @@ class MenuActionCofC(UserDataManager):
 				fname = os.path.join(get_menus_path(), id)
 				try:
 					os.unlink(fname)
-				except Exception, e:
+				except Exception as e:
 					log.error("Failed to remove %s: %s", fname, e)
 			else:
 				del self.app.current.menus[id]

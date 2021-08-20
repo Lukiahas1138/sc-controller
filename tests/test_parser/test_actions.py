@@ -1,3 +1,4 @@
+from builtins import object
 from scc.uinput import Keys, Axes, Rels
 from scc.actions import *
 from scc.constants import HIPFIRE_SENSIBLE
@@ -10,7 +11,7 @@ class TestActions(object):
 		"""
 		Tests if this class has test for every Action defined in acitons.py.
 		"""
-		for cls in Action.ALL.values():
+		for cls in list(Action.ALL.values()):
 			if "/actions.py" in inspect.getfile(cls):
 				if HatAction in cls.__bases__ or cls in (NoAction,) :
 					# Skip over some hard-coded cases, these have

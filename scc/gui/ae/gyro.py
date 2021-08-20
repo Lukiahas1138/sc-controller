@@ -3,6 +3,7 @@
 SC-Controller - Action Editor - Gyro -> Per Axis component
 """
 from __future__ import unicode_literals
+from builtins import range
 from scc.tools import _
 
 from scc.actions import Action, NoAction, AxisAction, MultiAction
@@ -51,7 +52,7 @@ class GyroComponent(AEComponent):
 				self._recursing = True
 				self.builder.get_object("cbInvertGyro").set_active(bool(action.default))
 				self._recursing = False
-				b = action.mods.keys()[0]
+				b = list(action.mods.keys())[0]
 				action = action.mods[b] or action.default
 				self.select_gyro_button(b)
 			else:
@@ -65,7 +66,7 @@ class GyroComponent(AEComponent):
 			for a in actions:
 				if isinstance(a, GyroAction):
 					pars = ensure_size(3, a.parameters)
-					for i in xrange(0, 3):
+					for i in range(0, 3):
 						if pars[i] is not None:
 							self.axes[i] = pars[i]
 							self.cbs[i].set_active(isinstance(a, GyroAbsAction))
@@ -79,7 +80,7 @@ class GyroComponent(AEComponent):
 	
 	def handles(self, mode, action):
 		if is_gyro_enable(action):
-			action = action.mods.values()[0]
+			action = list(action.mods.values())[0]
 		if isinstance(action, GyroAction):	# Takes GyroAbsAction as well
 			return True
 		if isinstance(action, MultiAction):
@@ -150,7 +151,7 @@ class GyroComponent(AEComponent):
 	
 	
 	def update(self, *a):
-		for i in xrange(0, 3):
+		for i in range(0, 3):
 			self.labels[i].set_label(describe_action(Action.AC_STICK, AxisAction, self.axes[i]))
 	
 	
@@ -167,7 +168,7 @@ class GyroComponent(AEComponent):
 		normal, n_set    = [ None, None, None ], False
 		absolute, a_set  = [ None, None, None ], False
 		
-		for i in xrange(0, 3):
+		for i in range(0, 3):
 			if self.axes[i]:
 				if self.cbs[i].get_active():
 					absolute[i] = self.axes[i]

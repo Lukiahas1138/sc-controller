@@ -1,3 +1,4 @@
+from builtins import object
 import xml.etree.cElementTree as ET
 import os
 

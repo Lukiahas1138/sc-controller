@@ -5,7 +5,10 @@ SC-Controller - tools
 Various stuff that I don't care to fit anywhere else.
 """
 from __future__ import unicode_literals
+from __future__ import division
 
+from builtins import str
+from past.utils import old_div
 from scc.paths import get_controller_icons_path, get_default_controller_icons_path
 from scc.paths import get_menuicons_path, get_default_menuicons_path
 from scc.paths import get_profiles_path, get_default_profiles_path
@@ -53,7 +56,7 @@ def init_logging(prefix="", suffix=""):
 			(str(c).decode("utf-8") if type(c) is str else c)
 			for c in args
 		])
-		msg = msg if type(msg) is unicode else str(msg).decode("utf-8")
+		msg = msg if type(msg) is str else str(msg).decode("utf-8")
 		old_log(self, level, msg, args, exc_info, extra)
 	logging.Logger._log = _log
 
@@ -123,7 +126,7 @@ def nameof(e):
 
 def shjoin(lst):
 	""" Joins list into shell-escaped, utf-8 encoded string """
-	s = [ unicode(x).encode("utf-8") for x in lst ]
+	s = [ str(x).encode("utf-8") for x in lst ]
 	#   - escape quotes
 	s = [ x.encode('string_escape') if (b'"' in x or b"'" in x) else x for x in s ]
 	#   - quote strings with spaces
@@ -416,10 +419,10 @@ def circle_to_square(x, y):
 		squared = x * (1.0 / sin(angle)), y * (1.0 / sin(angle))
 	# X- wall
 	elif angle > 3.0 * PId4 and angle <= 5.0 * PId4:
-		squared = x * (-1.0 / cos(angle)), y * (-1.0 / cos(angle))
+		squared = x * (old_div(-1.0, cos(angle))), y * (old_div(-1.0, cos(angle)))
 	# Y- wall
 	elif angle > 5.0 * PId4 and angle <= 7.0 * PId4:
-		squared = x * (-1.0 / sin(angle)), y * (-1.0 / sin(angle))
+		squared = x * (old_div(-1.0, sin(angle))), y * (old_div(-1.0, sin(angle)))
 	else:
 		raise ValueError("Invalid angle...?")
 	

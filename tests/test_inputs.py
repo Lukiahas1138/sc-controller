@@ -1,3 +1,7 @@
+from __future__ import division
+from builtins import range
+from builtins import object
+from past.utils import old_div
 from scc.constants import STICK_PAD_MIN, STICK_PAD_MAX
 from scc.drivers.fake import FakeController
 from scc.uinput import Dummy, Keys, Axes
@@ -126,7 +130,7 @@ class TestInputs(object):
 		
 		# Create movement over left pad
 		state = ZERO_STATE
-		for x in reversed(xrange(STICK_PAD_MIN * 2 / 3, -10, 1000)):
+		for x in reversed(range(old_div(STICK_PAD_MIN * 2, 3), -10, 1000)):
 			new_state = state._replace(buttons=SCButtons.LPADTOUCH, lpad_x=x)
 			mapper.input(mapper.controller, state, new_state)
 			state = new_state
@@ -134,7 +138,7 @@ class TestInputs(object):
 		# Release left pad
 		mapper.input(mapper.controller, state, ZERO_STATE)
 		# 'Wait' for 2s
-		for x in xrange(20):
+		for x in range(20):
 			mapper.input(mapper.controller, ZERO_STATE, ZERO_STATE)
 		assert int(mapper.mouse.scroll_x) == -24479
 	
@@ -182,7 +186,7 @@ class TestInputs(object):
 		
 		# Create movement over right pad
 		state = ZERO_STATE
-		for x in xrange(10, STICK_PAD_MAX * 2 / 3, 3000):
+		for x in range(10, old_div(STICK_PAD_MAX * 2, 3), 3000):
 			new_state = state._replace(buttons=SCButtons.RPADTOUCH, rpad_x=x)
 			mapper.input(mapper.controller, state, new_state)
 			state = new_state
@@ -191,15 +195,15 @@ class TestInputs(object):
 		mapper._tick_rate = 0.001
 		mapper.input(mapper.controller, state, ZERO_STATE)
 		# 'Wait' for 1s
-		for x in xrange(100):
+		for x in range(100):
 			mapper.input(mapper.controller, ZERO_STATE, ZERO_STATE)
 		assert mapper.gamepad.axes[Axes.ABS_RX] == 3510
 		# 'Wait' for another 0.5s
-		for x in xrange(50):
+		for x in range(50):
 			mapper.input(mapper.controller, ZERO_STATE, ZERO_STATE)
 		assert mapper.gamepad.axes[Axes.ABS_RX] == 1570
 		# 'Wait' for long time so stick recenters
-		for x in xrange(100):
+		for x in range(100):
 			mapper.input(mapper.controller, ZERO_STATE, ZERO_STATE)
 		assert mapper.gamepad.axes[Axes.ABS_RX] == 0
 	

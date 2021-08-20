@@ -6,6 +6,11 @@ Changes SVG on the fly and uptates that magnificent image on background with it.
 Also supports clicking on areas defined in SVG image.
 """
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import zip
+from builtins import str
+from builtins import object
+from past.utils import old_div
 from scc.tools import _
 
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Rsvg
@@ -92,7 +97,7 @@ class SVGWidget(Gtk.EventBox):
 		"""
 		Not actual signal handler, just called from App.
 		"""
-		x_offset = (self.get_allocation().width - self.image_width) / 2
+		x_offset = old_div((self.get_allocation().width - self.image_width), 2)
 		x = event.x - x_offset
 		y = event.y
 		for a in self.areas:
@@ -165,7 +170,7 @@ class SVGWidget(Gtk.EventBox):
 		Returns x, y, width and height of rect element relative to document root.
 		element can be specified by it's id.
 		"""
-		if type(element) in (str, unicode):
+		if type(element) in (str, str):
 			tree = ET.fromstring(self.current_svg.encode("utf-8"))
 			SVGEditor.update_parents(tree)
 			element = SVGEditor.get_element(tree, element)
@@ -234,7 +239,7 @@ class SVGWidget(Gtk.EventBox):
 		return SVGEditor(self)
 
 
-class Area:
+class Area(object):
 	SPECIAL_CASES = ( "LSTICK", "RSTICK", "DPAD", "ABS", "MOUSE",
 		"MINUSHALF", "PLUSHALF", "KEY" )
 	
@@ -272,7 +277,7 @@ class SVGEditor(object):
 		if type(svgw) == str:
 			self._svgw = None
 			self._tree = ET.fromstring(svgw)
-		elif type(svgw) == unicode:
+		elif type(svgw) == str:
 			self._svgw = None
 			self._tree = ET.fromstring(svgw.encode("utf-8"))
 		else:
@@ -335,7 +340,7 @@ class SVGEditor(object):
 		Returns self.
 		"""
 		
-		if type(e) in (str, unicode):
+		if type(e) in (str, str):
 			e = SVGEditor.get_element(self, e)
 		if e is not None:
 			e.parent.remove(e)

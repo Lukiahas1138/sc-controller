@@ -1,3 +1,4 @@
+from builtins import object
 from scc.uinput import Keys, Axes, Rels
 from scc.actions import ButtonAction, AxisAction, GyroAction
 from scc.constants import SCButtons, HapticPos

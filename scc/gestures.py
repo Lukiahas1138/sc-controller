@@ -6,6 +6,9 @@ Everything related to non-GUI part of gesture detection lies here.
 It's technically part of SCC-Daemon, separater into special module just to keep
 it clean.
 """
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 from scc.actions import Action
 from scc.tools import circle_to_square, clamp
 from scc.constants import STICK_PAD_MIN, STICK_PAD_MAX, CPAD, CPAD_MIN
@@ -35,7 +38,7 @@ class GestureDetector(Action):
 		Action.__init__(self)
 		# TODO: Configurable resolution
 		self._resolution = 3
-		self._deadzone = 1.0 / self._resolution / self._resolution
+		self._deadzone = old_div(1.0 / self._resolution, self._resolution)
 		self._up_direction = up_direction
 		self._on_finished = on_finished
 		self._enabled = False
@@ -84,7 +87,7 @@ class GestureDetector(Action):
 					x = float(x) / (float(STICK_PAD_MAX - STICK_PAD_MIN) / self._resolution)
 					y = float(y) / (float(STICK_PAD_MAX - STICK_PAD_MIN) / self._resolution)
 				# Check for deadzones around grid lines
-				for i in xrange(1, self._resolution):
+				for i in range(1, self._resolution):
 					if x > i - self._deadzone and x < i + self._deadzone: return
 					if y > i - self._deadzone and y < i + self._deadzone: return
 				# Round

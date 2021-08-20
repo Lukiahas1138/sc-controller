@@ -1,3 +1,4 @@
+from builtins import object
 from scc.actions import Action, NoAction
 
 class TestBoolean(object):

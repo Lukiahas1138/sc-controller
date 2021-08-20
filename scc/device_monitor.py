@@ -5,6 +5,8 @@ SC-Controller - Device Monitor
 Extends eudevmonitor with options to register callbacks and
 manage plugging/releasing devices.
 """
+from builtins import hex
+from builtins import range
 from scc.lib.eudevmonitor import Eudev, Monitor
 from scc.lib.ioctl_opt import IOR
 from ctypes.util import find_library
@@ -85,7 +87,7 @@ class DeviceMonitor(Monitor):
 			try:
 				if cb(syspath, vendor, product) is None:
 					del self.known_devs[syspath]
-			except Exception, e:
+			except Exception as e:
 				log.exception(e)
 				del self.known_devs[syspath]
 	
@@ -104,7 +106,7 @@ class DeviceMonitor(Monitor):
 			log.error("Failed to list bluetooth collections")
 			return
 		
-		for i in xrange(cl.conn_num):
+		for i in range(cl.conn_num):
 			ci = cl.conn_info[i]
 			id = "hci%s:%s" % (cl.dev_id, ci.handle)
 			address = ":".join([ hex(x).lstrip("0x").zfill(2).upper() for x in reversed(ci.bdaddr) ])
@@ -154,7 +156,7 @@ class DeviceMonitor(Monitor):
 		enumerator = self._eudev.enumerate()
 		subsystem_to_vp_to_callback = {}
 		
-		for key, cb in self.dev_added_cbs.items():
+		for key, cb in list(self.dev_added_cbs.items()):
 			subsystem, vendor_id, product_id = key
 			enumerator.match_subsystem(subsystem)
 			if subsystem not in subsystem_to_vp_to_callback:

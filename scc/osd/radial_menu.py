@@ -5,6 +5,10 @@ SC-Controller - OSD Menu
 Display menu that user can navigate through
 """
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 from scc.tools import _, set_logging_level
 
 from gi.repository import Gtk, Gdk, GLib, GdkX11
@@ -52,7 +56,7 @@ class RadialMenu(Menu):
 			# Try to read json file and bail out if it fails
 			desc = os.path.join(get_share_path(), "images", 'radial-menu.svg.json')
 			source_colors = json.loads(open(desc, "r").read())['colors']
-		except Exception, e:
+		except Exception as e:
 			log.warning("Failed to load keyboard description")
 			log.warning(e)
 			return
@@ -65,7 +69,7 @@ class RadialMenu(Menu):
 		
 		for k in RadialMenu.RECOLOR_STROKES:
 			if k in config['osd_colors'] and k in source_colors:
-				print "REC", source_colors[k], config['osd_colors'][k]
+				print("REC", source_colors[k], config['osd_colors'][k])
 				editor.recolor_strokes(source_colors[k], config['osd_colors'][k])
 		
 		editor.commit()
@@ -75,7 +79,7 @@ class RadialMenu(Menu):
 		""" (Re)centers all icons when menu is displayed or size is changed """
 		cx = allocation.width * self.scale * 0.5
 		cy = allocation.height * self.scale * 0.5
-		radius = min(cx, cy) * 2 / 3
+		radius = old_div(min(cx, cy) * 2, 3)
 		for i in self.items_with_icon:
 			angle, icon = float(i.a) * PI / 180.0, i.icon_widget
 			x, y = cx + sin(angle) * radius, cy - cos(angle) * radius
@@ -140,10 +144,10 @@ class RadialMenu(Menu):
 				l = SVGEditor.get_element(i.widget, "arc")
 				radius = float(l.attrib["radius"])	# TODO: Find how to get value of 'sodipodi:rx'
 				l.attrib["d"] = l.attrib["d-template"] % (
-					radius * cos(a1) + image_width / 2,
-					radius * sin(a1) + image_width / 2,
-					radius * cos(a2) + image_width / 2,
-					radius * sin(a2) + image_width / 2,
+					radius * cos(a1) + old_div(image_width, 2),
+					radius * sin(a1) + old_div(image_width, 2),
+					radius * cos(a2) + old_div(image_width, 2),
+					radius * sin(a2) + old_div(image_width, 2),
 				)
 			# Rotate arc to correct position
 			i.a = (360.0 / float(len(self.items))) * float(index)
@@ -176,7 +180,7 @@ class RadialMenu(Menu):
 				elif len(label) == 2:
 					self.editor.remove_element(SVGEditor.get_element(i.widget, "line0"))
 					first_line = 1
-				for line in xrange(0, len(label)):
+				for line in range(0, len(label)):
 					l = SVGEditor.get_element(i.widget, "line%s" % (first_line + line,))
 					if l is None:
 						break
@@ -202,7 +206,7 @@ class RadialMenu(Menu):
 		width = int(pb.get_width() * self.scale * self.get_scale_factor())
 		height = int(pb.get_height() * self.scale * self.get_scale_factor())
 		pixmap = X.create_pixmap(self.xdisplay, win, width, height, 1)
-		self.f.move(self.cursor, int(width / 2), int(height / 2))
+		self.f.move(self.cursor, int(old_div(width, 2)), int(old_div(height, 2)))
 		
 		gc = X.create_gc(self.xdisplay, pixmap, 0, None)
 		X.set_foreground(self.xdisplay, gc, 0)
@@ -211,7 +215,7 @@ class RadialMenu(Menu):
 		X.set_background(self.xdisplay, gc, 1)
 		
 		r = int(width * 0.985)
-		x = (width - r) / 2
+		x = old_div((width - r), 2)
 		
 		X.fill_arc(self.xdisplay, pixmap, gc,
 			x, x, r, r, 0, 360*64)
@@ -291,6 +295,6 @@ if __name__ == "__main__":
 		sys.exit(1)
 	m.run()
 	if m.get_exit_code() == 0:
-		print m.get_selected_item_id()
+		print(m.get_selected_item_id())
 	sys.exit(m.get_exit_code())
 

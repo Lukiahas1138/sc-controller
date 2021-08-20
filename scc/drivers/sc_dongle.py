@@ -5,7 +5,12 @@ SC Controller - Steam Controller Wireless Receiver (aka Dongle) Driver
 Called and used when Dongle is detected on USB bus.
 Handles one or multiple controllers connected to dongle.
 """
+from __future__ import division
 
+from builtins import zip
+from builtins import str
+from builtins import range
+from past.utils import old_div
 from scc.lib import IntEnum
 from scc.drivers.usb import USBDevice, register_hotplug_device
 from scc.constants import SCButtons, STICKTILT
@@ -45,7 +50,7 @@ INPUT_FORMAT = [
 	('h',   'q3'),
 	('h',   'q4'),
 	('16x', 'ukn_07')]
-FORMATS, NAMES = zip(*INPUT_FORMAT)
+FORMATS, NAMES = list(zip(*INPUT_FORMAT))
 TUP_FORMAT = '<' + ''.join(FORMATS)
 ControllerInput = namedtuple('ControllerInput', ' '.join([ x for x in NAMES if not x.startswith('ukn_') ]))
 SCI_NULL = ControllerInput._make(struct.unpack('<' + ''.join(FORMATS), b'\x00' * 64))
@@ -74,14 +79,14 @@ class Dongle(USBDevice):
 		self.claim_by(klass=3, subclass=0, protocol=0)
 		self._controllers = {}
 		self._no_serial = []
-		for i in xrange(0, Dongle.MAX_ENDPOINTS):
+		for i in range(0, Dongle.MAX_ENDPOINTS):
 			# Steam dongle apparently can do only 4 controllers at once
 			self.set_input_interrupt(FIRST_ENDPOINT + i, 64, self._on_input)
 	
 	
 	def close(self):
 		# Called when dongle is removed
-		for c in self._controllers.values():
+		for c in list(self._controllers.values()):
 			self.daemon.remove_controller(c)
 		self._controllers = {}
 		USBDevice.close(self)
@@ -277,8 +282,8 @@ class SCController(Controller):
 	def apply_config(self, config):
 		self.configure(idle_timeout=int(config['idle_timeout']),
 				led_level=float(config['led_level']))
-		self._input_rotation_l = float(config['input_rotation_l']) * PI / -180.0
-		self._input_rotation_r = float(config['input_rotation_r']) * PI / -180.0
+		self._input_rotation_l = old_div(float(config['input_rotation_l']) * PI, -180.0)
+		self._input_rotation_r = old_div(float(config['input_rotation_r']) * PI, -180.0)
 	
 	
 	def disconnected(self):

@@ -1,6 +1,9 @@
 #!/usr/bin/env python2
 from __future__ import unicode_literals
+from __future__ import division
 
+from builtins import object
+from past.utils import old_div
 from collections import deque
 from scc.lib import xwrappers as X
 from scc.uinput import UInput, Keyboard, Mouse, Dummy, Rels
@@ -109,7 +112,7 @@ class Mapper(object):
 				HapticPos.BOTH,
 				period = 32760,
 				amplitude = max(0, ef.level),
-				count = min(0x7FFF, ef.duration * ef.repetitions / 30)
+				count = min(0x7FFF, old_div(ef.duration * ef.repetitions, 30))
 			))
 	
 	

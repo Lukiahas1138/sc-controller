@@ -5,6 +5,7 @@ SC Controller - remotepad driver
 This is implementation or protocol used by Retroarch's Remote RetroPad core.
 Based on https://github.com/libretro/RetroArch/blob/master/cores/libretro-net-retropad.
 """
+from builtins import object
 from scc.tools import find_library
 from scc.constants import ControllerFlags
 from scc.controller import Controller
@@ -101,7 +102,7 @@ class RemotePadController(Controller):
 		return "remotepad.json"
 
 
-class Driver:
+class Driver(object):
 	PORT = 55400
 	
 	def __init__(self, daemon, config):

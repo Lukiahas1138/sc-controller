@@ -1,7 +1,10 @@
+from __future__ import absolute_import
+from builtins import chr
+from builtins import object
 import ctypes
 import collections
 import fcntl
-import ioctl_opt
+from . import ioctl_opt
 
 # input.h
 BUS_USB = 0x03

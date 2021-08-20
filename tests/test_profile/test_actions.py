@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import object
 from scc.uinput import Keys, Axes, Rels
 from scc.actions import *
 from scc.modifiers import BallModifier
@@ -272,8 +274,8 @@ class TestActions(object):
 			}]
 		})
 		
-		print a
-		print a.actions
+		print(a)
+		print(a.actions)
 		assert isinstance(a, DPadAction)
 		for sub in a.actions:
 			assert isinstance(sub, ButtonAction)

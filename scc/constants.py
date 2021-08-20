@@ -22,6 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from __future__ import division
+from past.utils import old_div
 from scc.lib import IntEnum
 
 """
@@ -127,14 +129,14 @@ class ControllerFlags(IntEnum):
 
 STICK_PAD_MIN = -32768
 STICK_PAD_MAX = 32768
-STICK_PAD_MIN_HALF = STICK_PAD_MIN / 3
-STICK_PAD_MAX_HALF = STICK_PAD_MAX / 3
+STICK_PAD_MIN_HALF = old_div(STICK_PAD_MIN, 3)
+STICK_PAD_MAX_HALF = old_div(STICK_PAD_MAX, 3)
 
 CPAD_MIN = 0
 CPAD_X_MAX = 1916
 CPAD_Y_MAX = 930
 
-STICK_PAD_MIN_HALF = STICK_PAD_MIN / 3
+STICK_PAD_MIN_HALF = old_div(STICK_PAD_MIN, 3)
 TRIGGER_MIN = 0
 TRIGGER_HALF = 50
 TRIGGER_CLICK = 254 # Values under this are generated until trigger clicks

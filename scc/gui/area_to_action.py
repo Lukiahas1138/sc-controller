@@ -6,6 +6,7 @@ Maps areas on SVG images into actions.
 Used by ActionEditor.
 """
 
+from builtins import range
 from scc.actions import AxisAction, RAxisAction, MouseAction, ButtonAction
 from scc.actions import HatLeftAction, HatRightAction
 from scc.actions import HatUpAction, HatDownAction
@@ -114,7 +115,7 @@ def action_to_area(action):
 		if len(pars) > len(action.parameters):
 			continue
 		differs = False
-		for i in xrange(0, len(pars)):
+		for i in range(0, len(pars)):
 			if pars[i] != action.parameters[i]:
 				differs = True
 				break

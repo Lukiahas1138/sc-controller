@@ -8,6 +8,9 @@ application (list is generated using xdg) and start it.
 Reuses styles from OSD Menu and OSD Dialog
 """
 from __future__ import unicode_literals
+from __future__ import division
+from builtins import object
+from past.utils import old_div
 from scc.tools import _, set_logging_level
 
 from gi.repository import Gtk
@@ -91,8 +94,8 @@ class BindingDisplay(OSDWindow):
 				height = int(float(ih) / float(iw) * float(width))
 				self.background.resize(width, height)
 				self.background.hilight({})
-			x = geometry.x + ((geometry.width - width) / 2)
-			y = geometry.y + ((geometry.height - height) / 2)
+			x = geometry.x + (old_div((geometry.width - width), 2))
+			y = geometry.y + (old_div((geometry.height - height), 2))
 		return x, y	
 	
 	
@@ -321,14 +324,14 @@ class Box(object):
 		elif (self.align & Align.BOTTOM) != 0:
 			self.y = gen.full_height - self.height - anchor_y
 		else:
-			self.y = (gen.full_height - self.height) / 2
+			self.y = old_div((gen.full_height - self.height), 2)
 		
 		if (self.align & Align.LEFT) != 0:
 			self.x = anchor_x
 		elif (self.align & Align.RIGHT) != 0:
 			self.x = gen.full_width - self.width - anchor_x
 		else:
-			self.x = (gen.full_width - self.width) / 2
+			self.x = old_div((gen.full_width - self.width), 2)
 	
 	
 	def place(self, gen, root):

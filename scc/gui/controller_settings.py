@@ -5,6 +5,8 @@ SC-Controller - Global Settings
 Currently setups only one thing...
 """
 from __future__ import unicode_literals
+from __future__ import division
+from past.utils import old_div
 from scc.tools import _
 
 from gi.repository import GLib, GdkPixbuf
@@ -189,8 +191,8 @@ class ControllerSettings(Editor, UserDataManager, ComboSetter):
 		if value <= 180:	# 2 minutes
 			return _("%s seconds") % int(value)
 		if value % 60 == 0:
-			return _("%s minutes") % int(value / 60)
-		return _("%sm %ss") % (int(value / 60), int(value % 60))
+			return _("%s minutes") % int(old_div(value, 60))
+		return _("%sm %ss") % (int(old_div(value, 60)), int(value % 60))
 	
 	
 	def on_sclLED_value_changed(self, scale, *a):

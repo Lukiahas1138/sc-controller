@@ -23,6 +23,8 @@
 # THE SOFTWARE.
 
 
+from __future__ import print_function
+from builtins import str
 import ast
 import os
 import shlex
@@ -189,5 +191,5 @@ def defines(base, include):
 if __name__ == '__main__':
 	import sys
 	definesDict = defines(sys.argv[1], sys.argv[2])
-	for k, v in definesDict.items():
+	for k, v in list(definesDict.items()):
 		print("{}:\t{}".format(k, v))

@@ -18,12 +18,15 @@ You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """
+from __future__ import print_function
 
+from builtins import str
+from builtins import object
 from collections import namedtuple
 from ctypes.util import find_library
 import os, ctypes, errno
 
-class Eudev:
+class Eudev(object):
 	LIB_NAME = "udev"
 	
 	def __init__(self):
@@ -144,7 +147,7 @@ def twoargs(fn):
 	return fn
 
 
-class Enumerator:
+class Enumerator(object):
 	"""
 	Iterable object used for enumerating available devices.
 	Yields syspaths (strings).
@@ -202,7 +205,7 @@ class Enumerator:
 		return self
 	
 	
-	def next(self):
+	def __next__(self):
 		if not self._enumeration_started:
 			self.__iter__()	# Starts the enumeration
 		if self._next is None:
@@ -214,7 +217,7 @@ class Enumerator:
 		return str(rv)
 
 
-class Monitor:
+class Monitor(object):
 	"""
 	Monitor object recieves device events.
 	receive_device method blocks until next event is processed, so it can be
@@ -327,10 +330,10 @@ if __name__ == "__main__":
 	udev = Eudev()
 	en = udev.enumerate().match_subsystem("hidraw")
 	for i in en:
-		print i
+		print(i)
 	
 	m = udev.monitor().match_subsystem("hidraw").start()
 	while True:
 		d = m.receive_device()
 		if d:
-			print os.major(d.devnum), os.minor(d.devnum), d
+			print(os.major(d.devnum), os.minor(d.devnum), d)

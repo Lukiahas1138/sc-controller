@@ -4,6 +4,13 @@ SC Controller - Universal HID driver. For all three universal HID devices.
 
 Borrows bit of code and configuration from evdevdrv.
 """
+from __future__ import print_function
+from __future__ import division
+from builtins import chr
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 from scc.lib.hidparse import GlobalItem, LocalItem, MainItem, ItemType
 from scc.lib.hidparse import UsagePage, parse_report_descriptor
 from scc.lib.hidparse import GenericDesktopPage, AXES
@@ -214,13 +221,13 @@ class HIDController(USBDevice, Controller):
 		if test_mode:
 			self.set_input_interrupt(id, self._packet_size, self.test_input)
 				
-			print "Buttons:", " ".join([ str(x + FIRST_BUTTON)
-					for x in xrange(self._decoder.buttons.button_count) ])
-			print "Axes:", " ".join([ str(x)
-					for x in xrange(len([
+			print("Buttons:", " ".join([ str(x + FIRST_BUTTON)
+					for x in range(self._decoder.buttons.button_count) ]))
+			print("Axes:", " ".join([ str(x)
+					for x in range(len([
 						a for a in self._decoder.axes
 						if a.mode != AxisMode.DISABLED
-					]))])
+					]))]))
 		else:
 			self._id = self._generate_id()
 			self.set_input_interrupt(id, self._packet_size, self.input)
@@ -248,7 +255,7 @@ class HIDController(USBDevice, Controller):
 		if config:
 			# Last possible value is default "maps-to-nothing" mapping
 			buttons = [BUTTON_COUNT - 1] * BUTTON_COUNT
-			for keycode, value in config.get('buttons', {}).items():
+			for keycode, value in list(config.get('buttons', {}).items()):
 				keycode = int(keycode) - FIRST_BUTTON
 				if keycode < 0 or keycode >= BUTTON_COUNT:
 					# Out of range
@@ -259,7 +266,7 @@ class HIDController(USBDevice, Controller):
 				else:
 					buttons[keycode] = self.button_to_bit(getattr(SCButtons, value))
 		else:
-			buttons = list(xrange(BUTTON_COUNT))
+			buttons = list(range(BUTTON_COUNT))
 		
 		return (ctypes.c_uint8 * BUTTON_COUNT)(*buttons)
 	
@@ -339,19 +346,19 @@ class HIDController(USBDevice, Controller):
 					if kind in AXES:
 						if not size in ALLOWED_SIZES:
 							raise UnparsableDescriptor("Axis with invalid size (%s bits)" % (size, ))
-						for i in xrange(count):
+						for i in range(count):
 							if next_axis < AXIS_COUNT:
 								log.debug("Found axis #%s at bit %s", int(next_axis), total)
 								if config:
 									target, axis_data = self._build_axis_maping(next_axis, config)
 									if axis_data:
-										axis_data.byte_offset = total / 8
+										axis_data.byte_offset = old_div(total, 8)
 										axis_data.bit_offset = total % 8
 										axis_data.size = size
 										self._decoder.axes[target] = axis_data
 								else:
 									self._decoder.axes[next_axis] = AxisData(mode = AxisMode.AXIS_NO_SCALE)
-									self._decoder.axes[next_axis].byte_offset = total / 8
+									self._decoder.axes[next_axis].byte_offset = old_div(total, 8)
 									self._decoder.axes[next_axis].bit_offset = total % 8
 									self._decoder.axes[next_axis].size = size
 								next_axis = next_axis + 1
@@ -366,12 +373,12 @@ class HIDController(USBDevice, Controller):
 							if config:
 								target, axis_data = self._build_axis_maping(next_axis, config, AxisMode.HATSWITCH)
 								if axis_data:
-									axis_data.byte_offset = total / 8
+									axis_data.byte_offset = old_div(total, 8)
 									axis_data.bit_offset = total % 8
 									self._decoder.axes[target] = axis_data
 							else:
 								self._decoder.axes[next_axis] = AxisData(mode = AxisMode.HATSWITCH)
-								self._decoder.axes[next_axis].byte_offset = total / 8
+								self._decoder.axes[next_axis].byte_offset = old_div(total, 8)
 								self._decoder.axes[next_axis].bit_offset = total % 8
 								self._decoder.axes[next_axis].data.hatswitch.min = STICK_PAD_MIN
 								self._decoder.axes[next_axis].data.hatswitch.max = STICK_PAD_MAX
@@ -392,7 +399,7 @@ class HIDController(USBDevice, Controller):
 						log.debug("Found %s buttons at bit %s", count, total)
 						self._decoder.buttons = ButtonData(
 							enabled = True,
-							byte_offset = total / 8,
+							byte_offset = old_div(total, 8),
 							bit_offset = total % 8,
 							size = buttons_size,
 							button_count = count,
@@ -403,7 +410,7 @@ class HIDController(USBDevice, Controller):
 						log.debug("Skipped over %s bits for %s at bit %s", count * size, kind, total)
 						total += count * size
 		
-		self._decoder.packet_size = total / 8
+		self._decoder.packet_size = old_div(total, 8)
 		if total % 8 > 0:
 			self._decoder.packet_size += 1
 		if self._decoder.packet_size > max_size:
@@ -447,7 +454,7 @@ class HIDController(USBDevice, Controller):
 			if full_path:
 				log.debug("Loading descriptor from '%s'", full_path)
 				return [ ord(x) for x in file(full_path, "rb").read(1024) ]
-		except Exception, e:
+		except Exception as e:
 			log.exception(e)
 		return None
 	
@@ -508,13 +515,13 @@ class HIDController(USBDevice, Controller):
 		
 		pressed = self._decoder.state.buttons & ~self._decoder.old_state.buttons
 		released = self._decoder.old_state.buttons & ~self._decoder.state.buttons
-		for j in xrange(0, self._decoder.buttons.button_count):
+		for j in range(0, self._decoder.buttons.button_count):
 			mask = 1 << j
 			if pressed & mask:
-				print "ButtonPress", FIRST_BUTTON + j
+				print("ButtonPress", FIRST_BUTTON + j)
 				sys.stdout.flush()
 			if released & mask:
-				print "ButtonRelease", FIRST_BUTTON + j
+				print("ButtonRelease", FIRST_BUTTON + j)
 				sys.stdout.flush()
 	
 	
@@ -651,13 +658,13 @@ def hiddrv_test(cls, args):
 		try:
 			return cls(device, None, handle, None, None, test_mode=True)
 		except NotHIDDevice:
-			print >>sys.stderr, "%.4x:%.4x is not a HID device" % (vid, pid)
+			print("%.4x:%.4x is not a HID device" % (vid, pid), file=sys.stderr)
 			fake_daemon.exitcode = 3
-		except UnparsableDescriptor, e:
-			print >>sys.stderr, "Invalid or unparsable HID descriptor", str(e)
+		except UnparsableDescriptor as e:
+			print("Invalid or unparsable HID descriptor", str(e), file=sys.stderr)
 			fake_daemon.exitcode = 4
-		except Exception, e:
-			print >>sys.stderr, "Failed to open device:", str(e)
+		except Exception as e:
+			print("Failed to open device:", str(e), file=sys.stderr)
 			fake_daemon.exitcode = 2
 	
 	_usb.set_daemon(fake_daemon)
@@ -667,7 +674,7 @@ def hiddrv_test(cls, args):
 	fake_daemon.dev_monitor.rescan()
 	
 	if fake_daemon.exitcode < 0:
-		print "Ready"
+		print("Ready")
 	sys.stdout.flush()
 	while fake_daemon.exitcode < 0:
 		fake_daemon.poller.poll()

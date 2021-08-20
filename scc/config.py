@@ -6,6 +6,8 @@ Handles loading, storing and querying config file
 """
 from __future__ import unicode_literals
 
+from builtins import str
+from builtins import object
 from scc.paths import get_config_path
 from scc.profile import Encoder
 from scc.special_actions import ChangeProfileAction
@@ -135,7 +137,7 @@ class Config(object):
 		""" (Re)loads configuration. Works as load(), but handles exceptions """
 		try:
 			self.load()
-		except Exception, e:
+		except Exception as e:
 			log.warning("Failed to load configuration; Creating new one.")
 			log.warning("Reason: %s", (e,))
 			self.create()

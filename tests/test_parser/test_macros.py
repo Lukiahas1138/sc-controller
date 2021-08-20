@@ -1,3 +1,4 @@
+from builtins import object
 from scc.uinput import Keys
 from scc.actions import ButtonAction, AxisAction
 from scc.macros import *
@@ -10,7 +11,7 @@ class TestMacros(object):
 		"""
 		Tests if this class has test for each known macro-related action defined.
 		"""
-		for cls in Action.ALL.values():
+		for cls in list(Action.ALL.values()):
 			if "/macros.py" in inspect.getfile(cls):
 				method_name = "test_%s" % (cls.COMMAND,)
 				assert hasattr(self, method_name), \

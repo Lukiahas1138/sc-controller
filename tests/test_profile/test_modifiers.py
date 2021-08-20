@@ -1,3 +1,4 @@
+from builtins import object
 from scc.uinput import Keys, Axes, Rels
 from scc.actions import ButtonAction, AxisAction, GyroAction
 from scc.constants import SCButtons, HapticPos
@@ -21,7 +22,7 @@ class TestModifiers(object):
 		"""
 		Tests if this class has test for each known modifier defined.
 		"""
-		for cls in Action.ALL.values():
+		for cls in list(Action.ALL.values()):
 			if "/modifiers.py" in inspect.getfile(cls):
 				method_name = "test_%s" % (cls.COMMAND,)
 				assert hasattr(self, method_name), \

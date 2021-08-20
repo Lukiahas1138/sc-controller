@@ -3,6 +3,9 @@
 SC-Controller - Input Display
 """
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from past.utils import old_div
 from scc.tools import _, set_logging_level
 
 from gi.repository import Gtk, GLib
@@ -119,8 +122,8 @@ class InputDisplay(OSDWindow):
 			# Compute center
 			x, y = ax + aw * 0.5 - cw * 0.5, ay + 1.0 - cw * 0.5
 			# Add pad position
-			x += data[0] * aw / STICK_PAD_MAX * 0.5
-			y -= data[1] * aw / STICK_PAD_MAX * 0.5
+			x += old_div(data[0] * aw, STICK_PAD_MAX) * 0.5
+			y -= old_div(data[1] * aw, STICK_PAD_MAX) * 0.5
 			# Move circle
 			self.main_area.move(widget, x, y)
 		elif what in ("LT", "RT", "STICKPRESS"):
@@ -141,11 +144,11 @@ class InputDisplay(OSDWindow):
 				else:
 					self.hilights[self.OBSERVE_COLOR].remove(what)
 				self._update_background()
-			except KeyError, e:
+			except KeyError as e:
 				# Non fatal
 				pass
 		else:
-			print "event", what
+			print("event", what)
 	
 	
 	def _update_background(self):

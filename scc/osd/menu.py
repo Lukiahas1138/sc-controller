@@ -5,6 +5,10 @@ SC-Controller - OSD Menu
 Display menu that user can navigate through and prints chosen item id to stdout
 """
 from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from builtins import str
+from past.utils import old_div
 from scc.tools import _
 
 from gi.repository import Gtk, GLib, Gio, Gdk, GdkX11, GdkPixbuf
@@ -179,24 +183,24 @@ class Menu(OSDWindow):
 				self._menuid = self.args.items[0]
 				self.items = MenuData.from_profile(self.args.from_profile, self._menuid)
 			except IOError:
-				print >>sys.stderr, '%s: error: profile file not found' % (sys.argv[0])
+				print('%s: error: profile file not found' % (sys.argv[0]), file=sys.stderr)
 				return False
 			except ValueError:
-				print >>sys.stderr, '%s: error: menu not found' % (sys.argv[0])
+				print('%s: error: menu not found' % (sys.argv[0]), file=sys.stderr)
 				return False
 		elif self.args.from_file:
 			try:
 				self._menuid = self.args.from_file
 				self.items = MenuData.from_file(self.args.from_file)
 			except:
-				print >>sys.stderr, '%s: error: failed to load menu file' % (sys.argv[0])
+				print('%s: error: failed to load menu file' % (sys.argv[0]), file=sys.stderr)
 				return False
 		else:
 			try:
 				self.items = MenuData.from_args(self.args.items)
 				self._menuid = None
 			except ValueError:
-				print >>sys.stderr, '%s: error: invalid number of arguments' % (sys.argv[0])
+				print('%s: error: invalid number of arguments' % (sys.argv[0]), file=sys.stderr)
 				return False
 		return True
 	
@@ -221,14 +225,14 @@ class Menu(OSDWindow):
 				self.items.append(item)
 		self.pack_items(self.parent, self.items)
 		if len(self.items) == 0:
-			print >>sys.stderr, '%s: error: no items in menu' % (sys.argv[0])
+			print('%s: error: no items in menu' % (sys.argv[0]), file=sys.stderr)
 			return False
 		
 		if self.args.print_items:
 			max_id_len = max(*[ len(x.id) for x in self.items ])
 			row_format ="{:>%s}:\t{}" % (max_id_len,)
 			for item in self.items:
-				print row_format.format(item.id, item.label)
+				print(row_format.format(item.id, item.label))
 		return True
 	
 	
@@ -506,7 +510,7 @@ class Menu(OSDWindow):
 		Returns True if menu was canceled.
 		"""
 		distance = sqrt(x*x + y*y)
-		if distance < STICK_PAD_MAX / 8:
+		if distance < old_div(STICK_PAD_MAX, 8):
 			self.quit(-1)
 			return True
 		return False
@@ -534,7 +538,7 @@ class Menu(OSDWindow):
 				max_w = self.get_allocation().width - 2 * pad_w
 				max_h = self.get_allocation().height - 2 * pad_h
 				
-				x, y = circle_to_square(x / (STICK_PAD_MAX * 2.0), y / (STICK_PAD_MAX * 2.0))
+				x, y = circle_to_square(old_div(x, (STICK_PAD_MAX * 2.0)), old_div(y, (STICK_PAD_MAX * 2.0)))
 				x = clamp(pad_w, (pad_w + max_w) * 0.5 + x * max_w, max_w - pad_w)
 				y = clamp(pad_h, (pad_h + max_h) * 0.5 + y * max_h * -1, max_h - pad_h)
 				self.f.move(self.cursor, int(x), int(y))

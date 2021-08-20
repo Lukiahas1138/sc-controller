@@ -9,6 +9,10 @@ Based on
 
 Licensed under GPL 2.0
 """
+from __future__ import division
+from builtins import range
+from past.utils import old_div
+from builtins import object
 from scc.lib.hidparse_data import GlobalItem, MainItem, LocalItem, UsagePage
 from scc.lib.hidparse_data import SensorPage, SensorSelector, LightSensor
 from scc.lib.hidparse_data import GenericDesktopPage, page_to_enum
@@ -323,7 +327,7 @@ class Parser(object):
 		self.code = code
 		self.value = 0
 		self.offset = offset
-		self.byte_offset = offset / 8
+		self.byte_offset = old_div(offset, 8)
 		self.bit_offset = offset % 8
 		self.count = count
 		self.len = count * size
@@ -385,13 +389,13 @@ def make_parsers(data):
 				pass
 			elif x[1] == ItemType.Data:
 				if kind in AXES:
-					for i in xrange(count):
+					for i in range(count):
 						parsers.append(HIDAxisParser(axis_id, offset + size * i, 1, size))
 						axis_id += 1
 				else:
 					parsers.append(HIDButtonParser(buttons_id, offset, count, size))
 					buttons_id += count
 			offset += size * count
-	size = offset / 8
+	size = old_div(offset, 8)
 	if offset % 8 > 0: size += 1
 	return size, parsers

@@ -5,6 +5,8 @@ SC-Controller - Action Editor - Axis Component
 Assigns emulated axis to trigger
 """
 from __future__ import unicode_literals
+from builtins import range
+from builtins import object
 from scc.tools import _
 
 from gi.repository import Gdk, GdkX11, GLib
@@ -525,7 +527,7 @@ class FakeMapper(object):
 				root, "_NET_CLIENT_LIST_STACKING", max_size=0x8000)
 		
 		if nitems > 0:
-			for i in reversed(xrange(0, nitems)):
+			for i in reversed(range(0, nitems)):
 				window = cast(prop, POINTER(X.XID))[i]
 				if window in my_windows:
 					# skip over my own windows

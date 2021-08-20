@@ -9,7 +9,12 @@ to do. If handler is not set, or doesn't have reqiuired method defined,
 action only prints warning to console.
 """
 from __future__ import unicode_literals
+from __future__ import division
 
+from builtins import next
+from builtins import str
+from builtins import range
+from past.utils import old_div
 from scc.constants import FE_STICK, FE_TRIGGER, FE_PAD, SCButtons
 from scc.constants import LEFT, RIGHT, STICK, SCButtons, SAME
 from scc.constants import STICK_PAD_MAX, DEFAULT
@@ -69,7 +74,7 @@ class ShellCommandAction(Action, SpecialAction):
 	def __init__(self, command):
 		if type(command) == str:
 			command = command.decode("unicode_escape")
-		assert type(command) == unicode
+		assert type(command) == str
 		Action.__init__(self, command)
 		self.command = command
 	
@@ -196,7 +201,7 @@ class OSDAction(Action, SpecialAction):
 			self.action = parameters[0]
 			self.text = self.action.describe(Action.AC_OSD)
 		else:
-			self.text = unicode(parameters[0])
+			self.text = str(parameters[0])
 		if self.action and isinstance(self.action, OSDEnabledAction):
 			self.action.enable_osd(self.timeout)
 	
@@ -300,7 +305,7 @@ class MenuAction(Action, SpecialAction, HapticEnabledAction):
 	"""
 	SA = COMMAND = "menu"
 	MENU_TYPE = "menu"
-	MIN_STICK_DISTANCE = STICK_PAD_MAX / 3
+	MIN_STICK_DISTANCE = old_div(STICK_PAD_MAX, 3)
 	DEFAULT_POSITION = 10, -10
 	
 	def __init__(self, menu_id, control_with=DEFAULT, confirm_with=DEFAULT,
@@ -650,7 +655,7 @@ class GesturesAction(Action, OSDEnabledAction, SpecialAction):
 			stuff = stuff[1:]
 		
 		for i in stuff:
-			if gstr is None and type(i) in (str, unicode):
+			if gstr is None and type(i) in (str, str):
 				gstr = i
 			elif gstr is not None and isinstance(i, Action):
 				self.gestures[gstr] = i
@@ -677,7 +682,7 @@ class GesturesAction(Action, OSDEnabledAction, SpecialAction):
 			for gstr in self.gestures:
 				a_str = self.gestures[gstr].to_string(True).split("\n")
 				a_str[0] = (" " * pad) + "  '" + (gstr + "',").ljust(11) + a_str[0]	# Key has to be one of SCButtons
-				for i in xrange(1, len(a_str)):
+				for i in range(1, len(a_str)):
 					a_str[i] = (" " * pad) + "  " + a_str[i]
 				a_str[-1] = a_str[-1] + ","
 				rv += a_str
@@ -728,7 +733,7 @@ class GesturesAction(Action, OSDEnabledAction, SpecialAction):
 	def _find_best_match_gesture(self, gesture_string):
 		NUM_MATCHES_TO_RETURN = 1
 	
-		similar_gestures = get_close_matches(gesture_string, self.gestures.keys(), NUM_MATCHES_TO_RETURN, self.precision)
+		similar_gestures = get_close_matches(gesture_string, list(self.gestures.keys()), NUM_MATCHES_TO_RETURN, self.precision)
 		best_gesture = next(iter(similar_gestures), None)
 
 		if best_gesture is not None:

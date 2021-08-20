@@ -4,13 +4,13 @@ export LD_LIBRARY_PATH=${APPDIR}/usr/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=${APPDIR}/usr/lib64:$LD_LIBRARY_PATH
 export GI_TYPELIB_PATH=${APPDIR}/usr/lib/girepository-1.0:/usr/lib/girepository-1.0
 export GDK_PIXBUF_MODULEDIR=${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders
-export PYTHONPATH=${APPDIR}/usr/lib/python2.7/site-packages
-export PYTHONPATH=${APPDIR}/usr/lib64/python2.7/site-packages
-export PYTHONPATH=$PYTHONPATH:${APPDIR}/usr/lib64/python2.7
-export PYTHONPATH=$PYTHONPATH:${APPDIR}/usr/lib64/python2.7/plat-linux2
-export PYTHONPATH=$PYTHONPATH:${APPDIR}/usr/lib64/python2.7/lib-dynload
+export PYTHONPATH=${APPDIR}/usr/lib/python3.9/site-packages
+export PYTHONPATH=${APPDIR}/usr/lib64/python3.9/site-packages
+export PYTHONPATH=$PYTHONPATH:${APPDIR}/usr/lib64/python3.9
+export PYTHONPATH=$PYTHONPATH:${APPDIR}/usr/lib64/python3.9/plat-linux2
+export PYTHONPATH=$PYTHONPATH:${APPDIR}/usr/lib64/python3.9/lib-dynload
 export SCC_SHARED=${APPDIR}/usr/share/scc
-export PYTHON=${APPDIR}/usr/bin/python2
+export PYTHON=${APPDIR}/usr/bin/python3
 
 
 function dependency_check_failed() {

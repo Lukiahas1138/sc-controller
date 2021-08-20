@@ -112,7 +112,7 @@ class ProfileSwitcher(Gtk.EventBox, UserDataManager):
 		if name.endswith(".sccprofile"): name = name[0:-11]
 		if "/" in name : name = os.path.split(name)[-1]
 		self._current = name
-		if type(name) == unicode:
+		if type(name) == str:
 			# GTK can't handle this
 			name = name.encode("utf-8")
 		

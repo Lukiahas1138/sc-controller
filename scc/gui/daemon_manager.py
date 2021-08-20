@@ -146,7 +146,7 @@ class DaemonManager(GObject.GObject):
 			self.connection = sc.connect_finish(results)
 			if self.connection == None:
 				raise Exception("Unknown error")
-		except Exception, e:
+		except Exception as e:
 			self._on_daemon_died()
 			return
 		self.buffer = b""
@@ -160,7 +160,7 @@ class DaemonManager(GObject.GObject):
 			response = sc.read_bytes_finish(results)
 			if response == None:
 				raise Exception("No data recieved")
-		except Exception, e:
+		except Exception as e:
 			# Broken sonnection, daemon was probbaly terminated
 			self._on_daemon_died()
 			return
@@ -196,7 +196,7 @@ class DaemonManager(GObject.GObject):
 				c = self.get_controller(controller_id)
 				c._connected = True
 				c._type = type
-				c._flags = long(flags)
+				c._flags = int(flags)
 				c._config_file = None if config_file in ("", "None") else config_file
 				while c in self._controllers:
 					self._controllers.remove(c)
@@ -426,7 +426,7 @@ class ControllerManager(GObject.GObject):
 			try:
 				data = json.loads(open(filename, "r").read()) or None
 				return data
-			except Exception, e:
+			except Exception as e:
 				log.exception(e)
 		return None
 	

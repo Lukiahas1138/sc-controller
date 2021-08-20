@@ -5,7 +5,10 @@ SC-Controller - Controller Registration data
 Dummy container classes
 """
 from __future__ import unicode_literals
+from __future__ import division
 
+from builtins import object
+from past.utils import old_div
 from scc.constants import STICK_PAD_MAX, STICK_PAD_MIN
 from scc.gui.creg.constants import AXIS_TO_BUTTON
 
@@ -59,7 +62,7 @@ class AxisData(object):
 			changed = True
 		self.pos = value
 		try:
-			r = (STICK_PAD_MAX - STICK_PAD_MIN) / (self.max - self.min)
+			r = old_div((STICK_PAD_MAX - STICK_PAD_MIN), (self.max - self.min))
 			v = (self.pos - self.min) * r
 			if self.invert:
 				return changed, STICK_PAD_MAX - v

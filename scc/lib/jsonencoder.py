@@ -4,6 +4,11 @@ _iterencode_list, function burried in 7th level of hell.
 
 Only idea here is to have lists encoded in single line.
 """
+from builtins import chr
+from builtins import str
+from builtins import range
+from past.builtins import basestring
+from builtins import object
 import re
 
 try:
@@ -284,7 +289,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
 		int=int,
 		isinstance=isinstance,
 		list=list,
-		long=long,
+		long=int,
 		str=str,
 		tuple=tuple,
 	):
@@ -323,7 +328,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
 				yield buf + 'true'
 			elif value is False:
 				yield buf + 'false'
-			elif isinstance(value, (int, long)):
+			elif isinstance(value, int):
 				yield buf + str(value)
 			elif isinstance(value, float):
 				yield buf + _floatstr(value)
@@ -364,9 +369,9 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
 			item_separator = _item_separator
 		first = True
 		if _sort_keys:
-			items = sorted(dct.items(), key=lambda kv: kv[0])
+			items = sorted(list(dct.items()), key=lambda kv: kv[0])
 		else:
-			items = dct.iteritems()
+			items = iter(dct.items())
 		for key, value in items:
 			if isinstance(key, basestring):
 				pass
@@ -380,7 +385,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
 				key = 'false'
 			elif key is None:
 				key = 'null'
-			elif isinstance(key, (int, long)):
+			elif isinstance(key, int):
 				key = str(key)
 			elif _skipkeys:
 				continue
@@ -400,7 +405,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
 				yield 'true'
 			elif value is False:
 				yield 'false'
-			elif isinstance(value, (int, long)):
+			elif isinstance(value, int):
 				yield str(value)
 			elif isinstance(value, float):
 				yield _floatstr(value)
@@ -429,7 +434,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
 			yield 'true'
 		elif o is False:
 			yield 'false'
-		elif isinstance(o, (int, long)):
+		elif isinstance(o, int):
 			yield str(o)
 		elif isinstance(o, float):
 			yield _floatstr(o)

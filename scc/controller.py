@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+from builtins import object
 from scc.constants import HapticPos
 import logging
 
